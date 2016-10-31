@@ -1,0 +1,217 @@
+<script type="text/javascript">
+
+    var devices;
+    var selectedDevice;
+    var endpoints = [];
+    var selectedEndpoint;
+    var units = [];
+
+    function prepare(){
+        
+        $('#input-device').hide();
+        $('#input-endpoint').hide();
+        $('#input-unit').hide();
+
+        if (this.secret) {
+            $.get("http://red.liberiot.org/api/public/devices/"+this.secret, function(result) {
+               
+                $('#input-device').show();
+                $('#input-endpoint').show();
+                $('#input-unit').show();
+
+                devices = result;
+
+                populateDevices(devices);
+                setOnChangeDeviceListener();
+                setOnChangeEndpointListener();
+            });
+        }
+    }
+
+    function populateDevices(devices){
+
+        $('#node-input-device')
+            .find('option')
+            .remove()
+            .end();
+
+        devices.forEach(function(device){
+            $('#node-input-device').append($('<option>', {
+                value: device._id,
+                text: device.name
+            }));
+        });
+
+        if (this.device){
+            $('#node-input-device').val(this.device);
+        }
+    }
+
+
+    function setOnChangeDeviceListener(){
+        
+        onSelectDevice(devices[0]._id);
+        onSelectEndpoint(devices[0].scheme.registers[0].endpoints[0].name);
+
+        $('#node-input-device').change(function() {
+            var deviceId = $('#node-input-device').val();
+            this.device = deviceId;
+            onSelectDevice(deviceId);
+        });
+    }
+
+    function getDevice(id){
+        for (var i = 0; i < devices.length; i++){
+            if (devices[i]._id == id){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    function getEndpoints(device){
+        var endpoints = [];
+        var registers = device.scheme.registers;
+        
+        registers.forEach(function(register){
+            var regEndpoints = register.endpoints;
+            endpoints = endpoints.concat(regEndpoints);
+        });
+
+        return endpoints;
+    }
+
+    function onSelectDevice(deviceId) {  
+        var index = getDevice(deviceId);
+        if (index > -1){
+            var device = devices[index];
+            selectedDevice = device;
+            endpoints = getEndpoints(device);
+
+            $('#node-input-endpoint')
+                 .find('option')
+                 .remove()
+                 .end();
+
+            endpoints.forEach(function(endpoint, index) {
+                $('#node-input-endpoint')
+                 .append($('<option>', {
+                    value: endpoint.name,
+                    text: endpoint.name
+                        }));
+                    });
+
+            if (this.endpoint){
+                $('#node-input-endpoint').val(this.endpoint);
+            }
+        }
+    }
+
+    function setOnChangeEndpointListener(){
+        $('#node-input-endpoint').change(function() {
+            var endpointName = $('#node-input-endpoint').val();
+            onSelectEndpoint(endpointName);
+        });
+    }
+
+    function onSelectEndpoint(name){
+       var index = findEndpoint(name);
+
+       if (index > -1){
+            endpoint = endpoints[index];
+            selectedEndpoint = endpoint;
+            units = endpoint.units;
+
+            $('#node-input-unit')
+                 .find('option')
+                 .remove()
+                 .end();
+
+            units.forEach(function(unit, index) {
+                $('#node-input-unit')
+                 .append($('<option>', {
+                    value: unit.name,
+                    text: unit.name
+                        }));
+                    });
+
+           if (this.unit){
+                $('#node-input-unit').val(this.unit);
+            }
+       }
+    }
+
+    function findEndpoint(name){
+         for (var i = 0; i < endpoints.length; i++){
+            if (endpoints[i].name === name) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    function save(){
+        this.mqttSub = 'opendatared/json/'+this.secret+'/'+selectedDevice.uid.full.toUpperCase()+'/'+this.endpoint+'/'+this.unit;
+        this.mqttPub = 'opendatared/control/'+this.secret+'/'+selectedDevice.uid.full.toUpperCase()+'/'+this.endpoint;
+    }
+
+    RED.nodes.registerType('liberiot',{
+        category: 'liberiot',
+        color: '#E9967A',
+        defaults: {
+            name: {value: ""},
+            secret: {value:""},
+            device: {value:""},
+            endpoint: {value:""},
+            unit: {value:""},
+            mqttSub: {value: ""},
+            mqttPub: {value: ""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "liberiot.png",
+        label: function() {
+            return this.name || "Liberiot";
+        },
+        oneditprepare: prepare,
+        oneditsave: save
+    });
+</script>
+
+<script type="text/x-red" data-template-name="liberiot">
+
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-secret"><i class="fa fa-lock"></i> Secret key</label>
+        <input type="text" id="node-input-secret" placeholder="Secret key">
+    </div>
+
+    <div class="form-row" id="input-device">
+        <label for="node-input-device"><i class="fa fa-tablet"></i> Device</label>
+        <select id="node-input-device">
+        </select>
+    </div>
+     
+    <div class="form-row" id="input-endpoint">
+        <label for="node-input-endpoint"><i class="fa fa-tablet"></i> Endpoint</label>
+        <select id="node-input-endpoint">
+        </select>
+    </div>
+
+    <div class="form-row" id="input-unit">
+        <label for="node-input-unit"><i class="fa fa-tablet"></i> Unit</label>
+        <select id="node-input-unit">
+        </select>
+    </div>
+
+
+
+</script>
+
+<script type="text/x-red" data-help-name="liberiot">
+    <p>A simple node connects with Liberiot Red</p>
+</script>

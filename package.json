@@ -1,0 +1,19 @@
+{
+  "name": "node-red-contrib-liberiot",
+  "version": "0.0.1",
+  "description": "Example",
+  "main": "liberiot.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "inubo",
+  "dependencies": {
+    "mqtt": "^1.14.1"
+  },
+  "node-red": {
+    "nodes": {
+      "liberiot": "liberiot.js"
+    }
+  },
+  "license": "ISC"
+}
