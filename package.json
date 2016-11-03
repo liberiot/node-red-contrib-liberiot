@@ -1,7 +1,7 @@
 {
   "name": "node-red-contrib-liberiot",
-  "version": "0.0.2",
-  "description": "Liberiot module to Node Red",
+  "version": "0.0.7",
+  "description": "Liberiot module for Node Red",
   "main": "liberiot.js",
   "author": "inubo",
   "keywords": [
