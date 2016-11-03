@@ -1,5 +1,16 @@
 #**LIBERIOT**
 
+**Contents** 
+
+- [WIRELESS IOT FREEDOM](#)
+- [WIRELESS INFRASTRUCTURE](#)
+- [THE GATEWAY](#)
+- [THE MOTES](#)
+- [THE RADIO](#)
+- [THE SERVER](#)
+- [OPEN HARDWARE](#)
+- [GET STARTED](#)
+
 ###WIRELESS IOT FREEDOM
 
 LIBERIOT is a real alternative to all those expensive proprietary IoT wireless solutions. Unlike Sigfox or LoRa, LIBERIOT is based on very low-cost infrastructure and motes. LIBERIOT can also be scaled-up very easily due to the natural flexibility of the protocols and the simplicity of the gateways.
