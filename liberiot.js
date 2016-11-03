@@ -9,7 +9,7 @@ module.exports = function (RED) {
 
         node.status({ fill: "red", shape: "dot", text: "Not connected" });
 
-        var client = mqtt.connect('mqtt://mqtt.liberiot.org:3001', { clientId: config.device + config.endpoint + config.unit + config.name });
+        var client = mqtt.connect('mqtt://mqtt.liberiot.org:3001');
 
         client.on('connect', subscribeLiberiot);
         client.on('message', parseMessage);

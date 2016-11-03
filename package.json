@@ -3,9 +3,6 @@
   "version": "0.0.1",
   "description": "Liberiot module to Node Red",
   "main": "liberiot.js",
-  "scripts": {
-    "test": "test"
-  },
   "author": "inubo",
   "dependencies": {
     "mqtt": "^1.14.1"
