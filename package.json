@@ -15,5 +15,9 @@
       "liberiot": "liberiot.js"
     }
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/liberiot/node-red-contrib-liberiot"
+  },
   "license": "ISC"
 }
