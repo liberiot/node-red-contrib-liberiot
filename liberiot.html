@@ -151,8 +151,14 @@
     }
 
     function save(){
-        this.mqttSub = 'opendatared/json/'+this.secret+'/'+selectedDevice.uid.full.toUpperCase()+'/'+this.endpoint+'/'+this.unit;
-        this.mqttPub = 'opendatared/control/'+this.secret+'/'+selectedDevice.uid.full.toUpperCase()+'/'+this.endpoint;
+        var endpointName = $('#node-input-endpoint').val();
+        var unit = $('#node-input-unit').val();
+        this.mqttSub = 'opendatared/json/'+this.secret+'/'+selectedDevice.uid.full.toUpperCase()+'/'+endpointName+'/'+unit;
+        this.mqttPub = 'opendatared/control/'+this.secret+'/'+selectedDevice.uid.full.toUpperCase()+'/'+endpointName;
+    }
+
+    function removeConnections(){
+        console.log('remove conections');
     }
 
     RED.nodes.registerType('liberiot',{
@@ -174,7 +180,8 @@
             return this.name || "Liberiot";
         },
         oneditprepare: prepare,
-        oneditsave: save
+        oneditsave: save,
+        onpaletteremove: removeConnections
     });
 </script>
 

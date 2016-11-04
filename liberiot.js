@@ -1,23 +1,27 @@
 'use strict';
 
+var mqtt = require('mqtt');
+
 module.exports = function (RED) {
+
     function LiberiotNode(config) {
+
         RED.nodes.createNode(this, config);
+
         var node = this;
 
-        var mqtt = require('mqtt');
 
         node.status({ fill: "red", shape: "dot", text: "Not connected" });
 
-        var client = mqtt.connect('mqtt://mqtt.liberiot.org:3001');
+        this.client = mqtt.connect('mqtt://mqtt.liberiot.org:3001');
 
-        client.on('connect', subscribeLiberiot);
-        client.on('message', parseMessage);
+        this.client.on('connect', subscribeLiberiot);
+        this.client.on('message', parseMessage);
 
         function subscribeLiberiot() {
 
             if (config.mqttSub) {
-                client.subscribe(config.mqttSub, null, function () {
+                node.client.subscribe(config.mqttSub, null, function () {
                     node.status({ fill: "green", shape: "dot", text: "Connected" });
                 });
             }
@@ -38,9 +42,15 @@ module.exports = function (RED) {
 
         this.on('input', function (message) {
             console.log(config.mqttPub + '/' + message.payload);
-            client.publish(config.mqttPub + '/' + message.payload);
+            node.client.publish(config.mqttPub + '/' + message.payload);
         });
     }
 
     RED.nodes.registerType("liberiot", LiberiotNode);
+
+    LiberiotNode.prototype.close = function () {
+        if (this.client) {
+            this.client.end();
+        }
+    }
 };
