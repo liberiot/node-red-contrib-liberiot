@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "sourceMap": true,
+    "allowJs": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "moduleResolution": "node"
+  },
+  "files": [
+    "./node_modules/@types/node/index.d.ts",
+    "./node_modules/@types/node-red/index.d.ts"
+  ],
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
+}
